@@ -12,6 +12,11 @@ fn main() {
     if minor >= 31 {
         println!("cargo:rustc-cfg=bitflags_const_fn");
     }
+
+    // const fn conditionals stabilized in Rust 1.33:
+    if minor >= 33 {
+        println!("cargo:rustc-cfg=bitflags_const_fn_cond");
+    }
 }
 
 fn rustc_minor_version() -> Option<u32> {
