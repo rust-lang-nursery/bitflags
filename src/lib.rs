@@ -261,7 +261,12 @@ extern crate std;
 #[doc(hidden)]
 pub extern crate core as _core;
 
-/// The macro used to generate the flag structures.
+#[doc(inline)]
+pub use bitflags_trait::BitFlags;
+
+mod bitflags_trait;
+
+/// The macro used to generate the flag structure.
 ///
 /// See the [crate level docs](../bitflags/index.html) for complete documentation.
 ///
@@ -784,6 +789,66 @@ macro_rules! __impl_bitflags {
                 result
             }
         }
+
+        impl $crate::BitFlags for $BitFlags {
+            type Bits = $T;
+
+            fn empty() -> Self {
+                $BitFlags::empty()
+            }
+
+            fn all() -> Self {
+                $BitFlags::all()
+            }
+
+            fn bits(&self) -> $T {
+                $BitFlags::bits(self)
+            }
+
+            fn from_bits(bits: $T) -> $crate::_core::option::Option<$BitFlags> {
+                $BitFlags::from_bits(bits)
+            }
+
+            fn from_bits_truncate(bits: $T) -> $BitFlags {
+                $BitFlags::from_bits_truncate(bits)
+            }
+
+            unsafe fn from_bits_unchecked(bits: $T) -> $BitFlags {
+                $BitFlags::from_bits_unchecked(bits)
+            }
+
+            fn is_empty(&self) -> bool {
+                $BitFlags::is_empty(self)
+            }
+
+            fn is_all(&self) -> bool {
+                $BitFlags::is_all(self)
+            }
+
+            fn intersects(&self, other: $BitFlags) -> bool {
+                $BitFlags::intersects(self, other)
+            }
+
+            fn contains(&self, other: $BitFlags) -> bool {
+                $BitFlags::contains(self, other)
+            }
+
+            fn insert(&mut self, other: $BitFlags) {
+                $BitFlags::insert(self, other)
+            }
+
+            fn remove(&mut self, other: $BitFlags) {
+                $BitFlags::remove(self, other)
+            }
+
+            fn toggle(&mut self, other: $BitFlags) {
+                $BitFlags::toggle(self, other)
+            }
+
+            fn set(&mut self, other: $BitFlags, value: bool) {
+                $BitFlags::set(self, other, value)
+            }
+        }
     };
 
     // Every attribute that the user writes on a const is applied to the
@@ -1018,7 +1083,7 @@ mod tests {
             unsafe { Flags::from_bits_unchecked(0b1001) },
             (extra | Flags::A)
         );
-      
+
         let extra = unsafe { EmptyFlags::from_bits_unchecked(0b1000) };
         assert_eq!(
           unsafe { EmptyFlags::from_bits_unchecked(0b1000) },
